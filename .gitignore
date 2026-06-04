@@ -10,6 +10,7 @@ data/
 /.claude
 
 # Docs (personal notes, not project docs)
+.cache/
 docs/
 claude.md
 need.md
