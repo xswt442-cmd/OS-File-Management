@@ -1,0 +1,19 @@
+# Build
+build/
+cmake-build-*/
+
+# Runtime data
+data/
+
+# IDE
+/.vscode
+/.claude
+
+# Docs (personal notes, not project docs)
+docs/
+claude.md
+need.md
+
+# OS junk
+Thumbs.db
+Desktop.ini

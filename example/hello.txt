@@ -1,0 +1,3 @@
+Hello, World!
+This is a simple text file for testing OS-File-Management.
+Created by the example test suite.

@@ -1,0 +1,29 @@
+OS File Management Project Notes
+================================
+
+Key Design Decisions:
+
+1. FAT (File Allocation Table) instead of i-node
+   - Simpler to implement
+   - Direct mapping to OS concepts
+   - Easy to understand chain traversal
+
+2. Bitmap for free space management
+   - O(1) lookup for free blocks
+   - Compact: 128 bytes for 1024 blocks
+
+3. Directory as special file
+   - Directory entries stored in data blocks
+   - Each entry: name (56) + first_block + size + timestamps
+   - 13 entries per block
+
+4. Persistence via binary dump
+   - Entire 1MB virtual disk written to .fsimg file
+   - Zero serialization overhead
+   - Instant recovery on restart
+
+Future Improvements:
+- Access control (permissions)
+- Symbolic links
+- File system check (fsck)
+- Fragmentation statistics

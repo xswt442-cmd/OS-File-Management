@@ -1,0 +1,55 @@
+format
+y
+mkdir home
+mkdir docs
+mkdir quotes
+ls -l
+cd home
+mkdir user
+ls
+cd ..
+tree
+create readme.txt
+open readme.txt
+write 0 "OS-File-Management v1.0 -- FAT + Bitmap -- 1MB Virtual Disk"
+close 0
+create hello.txt
+open hello.txt
+write 0 "Hello from a simulated file system!"
+close 1
+create config.ini
+open config.ini
+write 0 "[system] name=OSFS block_size=1024"
+close 2
+ls -l
+open readme.txt
+read 3 100
+close 4
+cat hello.txt
+stat config.ini
+rename config.ini settings.ini
+ls
+delete settings.ini
+ls
+rmdir home
+mkdir home
+cd quotes
+create golden.txt
+open golden.txt
+write 0 "他这种答案要是也能拿烟的话，那……那我不拍了，我不拍了，你们俩拍吧，啊？我不敢苟同他的观点啊。我个人认为，这个意大利面就应该拌42号混凝土，因为这个螺丝钉的长度，它很容易会直接影响到挖掘机的扭矩，你知道吧？你往里砸的时候，一瞬间它就会产生大量的高能蛋白，俗称 UFO。会严重影响经济的发展，甚至对整个太平洋以及充电器都会造成一定的核污染，你知道吧？啊？再者说，根据这个勾股定理，你可以很容易地推断出，人工饲养的东条英机，它是可以捕获野生的三角函数的。所以说，这个……这个这个这个，你不管秦始皇的切面是否具有放射性啊，特朗普的 n 次方是否含有沉淀物，都不影响这个沃尔玛跟维尔康在南极会合，啊？"
+close 0
+create money.txt
+open money.txt
+write 0 "我研究股票快二十年了，预测个股的走势还是颇有心得，最近几年来几乎还没有出过错！今天我研究了一下这个票，从宏观和技术层面来分析，我觉得这个票明天的走势是关键！不是涨就是跌，也有可能不涨也不跌，甚至有可能停牌！此股我觉得不确定性很强，近期可能要上涨，但也不排除下跌的可能。可以卖，也可以持有，但也可能浪费时间甚至是亏损，运气好的话也有可能会赚钱！"
+close 1
+ls -l
+cat golden.txt
+cd ..
+tree
+df
+du quotes/golden.txt
+stat quotes/money.txt
+rename quotes/money.txt quotes/stock.txt
+ls quotes
+help
+exit
