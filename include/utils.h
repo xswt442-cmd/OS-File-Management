@@ -40,6 +40,8 @@ struct OpenFile {
     uint32_t size;
     uint32_t cursor;
     uint32_t ref_count;
+    uint32_t dir_block;       // 所在目录块号，用于回写 size
+    char     name[56];        // 文件名，用于定位目录项
 };
 
 struct UserFd {

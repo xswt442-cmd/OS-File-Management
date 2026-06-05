@@ -5,6 +5,7 @@
 #include <windows.h>
 #endif
 
+// UI 的命名空间，内部实现 UI 相关功能
 namespace ui {
 
 void console_init() {

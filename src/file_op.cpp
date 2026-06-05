@@ -35,9 +35,9 @@ int FileOperator::create(uint32_t dir_block, const std::string& name) {
 int FileOperator::open(uint32_t dir_block, const std::string& name) {
     const DirEntry* e = dir_mgr_.find(dir_block, name);
     if (!e || e->attr != ATTR_FILE) return -1;
-    // 检查是否已打开
+    // 检查是否已打开（ref_count > 0 才复用）
     for (size_t i = 0; i < sys_files_.size(); i++) {
-        if (sys_files_[i].first_block == e->first_block) {
+        if (sys_files_[i].first_block == e->first_block && sys_files_[i].ref_count > 0) {
             sys_files_[i].ref_count++;
             int fd = next_fd_++;
             user_fds_.push_back({fd, static_cast<uint32_t>(i)});
@@ -46,10 +46,13 @@ int FileOperator::open(uint32_t dir_block, const std::string& name) {
     }
     // 新建打开文件表项
     OpenFile of;
+    std::memset(&of, 0, sizeof(of));
     of.first_block = e->first_block;
     of.size        = e->size;
     of.cursor      = 0;
     of.ref_count   = 1;
+    of.dir_block   = dir_block;
+    std::strncpy(of.name, name.c_str(), MAX_FILENAME - 1);
     sys_files_.push_back(of);
     uint32_t fid = static_cast<uint32_t>(sys_files_.size() - 1);
     int fd = next_fd_++;
@@ -63,8 +66,28 @@ bool FileOperator::close(int fd) {
         if (user_fds_[i].fd == fd) {
             uint32_t fid = user_fds_[i].file_id;
             if (fid < sys_files_.size()) {
-                if (sys_files_[fid].ref_count > 0)
-                    sys_files_[fid].ref_count--;
+                auto& of = sys_files_[fid];
+                if (of.ref_count > 0)
+                    of.ref_count--;
+                // 把 size 写回磁盘目录项
+                if (of.dir_block < BLOCK_COUNT) {
+                    uint32_t blk = of.dir_block;
+                    bool found = false;
+                    while (!found && blk < BLOCK_COUNT) {
+                        auto* entries = reinterpret_cast<DirEntry*>(disk_ + blk * BLOCK_SIZE);
+                        for (uint32_t j = 0; j < ENTRIES_PER_BLOCK; j++) {
+                            if (std::strncmp(entries[j].name, of.name, MAX_FILENAME) == 0) {
+                                entries[j].size = of.size;
+                                entries[j].modify_time = current_timestamp();
+                                found = true;
+                                break;
+                            }
+                        }
+                        int32_t next = fat_.get(blk);
+                        if (next == FAT_EOF || next == FAT_FREE) break;
+                        blk = static_cast<uint32_t>(next);
+                    }
+                }
             }
             user_fds_.erase(user_fds_.begin() + i);
             return true;
